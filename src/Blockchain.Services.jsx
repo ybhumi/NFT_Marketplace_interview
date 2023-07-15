@@ -2,10 +2,12 @@ import Web3 from 'web3'
 import { setGlobalState, getGlobalState, setAlert } from './store'
 import abi from './abis/TimelessNFT.json'
 
+// Initialize Web3 using the injected Ethereum provider (e.g., MetaMask)
 const { ethereum } = window
 window.web3 = new Web3(ethereum)
 window.web3 = new Web3(window.web3.currentProvider)
 
+// Get the Ethereum contract based on the current network
 const getEtheriumContract = async () => {
   const web3 = window.web3
   const networkId = await web3.eth.net.getId()
@@ -19,6 +21,7 @@ const getEtheriumContract = async () => {
   }
 }
 
+// Connect the wallet and set the connected account in the global state
 const connectWallet = async () => {
   try {
     if (!ethereum) return reportError('Please install Metamask')
@@ -29,15 +32,17 @@ const connectWallet = async () => {
   }
 }
 
+// Check if the wallet is connected and handle events like chain change or account change
 const isWallectConnected = async () => {
   try {
     if (!ethereum) return reportError('Please install Metamask')
     const accounts = await ethereum.request({ method: 'eth_accounts' })
 
+    // Reload the page when the chain changes
     window.ethereum.on('chainChanged', (chainId) => {
       window.location.reload()
     })
-
+// Update the connected account when it changes
     window.ethereum.on('accountsChanged', async () => {
       setGlobalState('connectedAccount', accounts[0].toLowerCase())
       await isWallectConnected()
@@ -53,7 +58,7 @@ const isWallectConnected = async () => {
     reportError(error)
   }
 }
-
+// Structure the NFTs data by converting units, reversing the order, and lowercasing addresses
 const structuredNfts = (nfts) => {
   return nfts
     .map((nft) => ({
@@ -68,6 +73,8 @@ const structuredNfts = (nfts) => {
     .reverse()
 }
 
+
+// Get all NFTs and transactions from the contract and update the global state
 const getAllNFTs = async () => {
   try { 
     if (!ethereum) return reportError('Please install Metamask')
@@ -83,6 +90,7 @@ const getAllNFTs = async () => {
   }
 }
 
+// Mint an NFT by paying the specified price
 const mintNFT = async ({ title, description, metadataURI, price }) => {
   try {
     price = window.web3.utils.toWei(price.toString(), 'ether')
@@ -100,6 +108,7 @@ const mintNFT = async ({ title, description, metadataURI, price }) => {
   }
 }
 
+// Buy an NFT by paying the specified cost
 const buyNFT = async ({ id, cost }) => {
   try {
     cost = window.web3.utils.toWei(cost.toString(), 'ether')
@@ -116,6 +125,8 @@ const buyNFT = async ({ id, cost }) => {
   }
 }
 
+
+// Update the price of an NFT
 const updateNFT = async ({ id, cost }) => {
   try {
     cost = window.web3.utils.toWei(cost.toString(), 'ether')
@@ -128,6 +139,7 @@ const updateNFT = async ({ id, cost }) => {
   }
 }
 
+// Report an error by setting an alert message with red color
 const reportError = (error) => {
   setAlert(JSON.stringify(error), 'red')
 }

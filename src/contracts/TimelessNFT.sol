@@ -1,32 +1,38 @@
 // SPDX-License-Identifier: MIT
+// The SPDX-License-Identifier specifies the license under which the code is released. In this case, it is the MIT license.
+
 pragma solidity >=0.7.0 <0.9.0;
 
 import "./ERC721.sol";
 import "./ERC721Enumerable.sol";
-//these filese are present in contract folder
+// These files are present in the contract folder.
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-//inheritance
+// Inheritance
 contract TimelessNFT is ERC721Enumerable, Ownable {
 
-    //converison of unit to string 
+    // Conversion of uint to string
     using Strings for uint256;
 
-    //mappinhg which hold information of everyURi that has been minted in this platform
+    // Mapping that holds information of every URI that has been minted in this platform
     mapping(string => uint8) existingURIs;
-    //holds mindted nfts
+
+    // Holds minted NFTs
     mapping(uint256 => address) public holderOf;
 
-     //nft artist addres
+    // NFT artist address
     address public artist;
-    //royalityFee
-    uint256 public royalityFee;
+
+    // Royalty fee
+    uint256 public royaltyFee;
 
     uint256 public supply = 0;
     uint256 public totalTx = 0;
-    //cost for minting
+
+    // Cost for minting
     uint256 public cost = 0.01 ether;
-    //sales event,when nft is minted or transferred frm once person to another this event is gonna fire
+
+    // Sales event, fired when an NFT is minted or transferred from one person to another
     event Sale(
         uint256 id,
         address indexed owner,
@@ -35,7 +41,7 @@ contract TimelessNFT is ERC721Enumerable, Ownable {
         uint256 timestamp
     );
 
-//hold information of each transaction happening
+    // Hold information of each transaction happening
     struct TransactionStruct {
         uint256 id;
         address owner;
@@ -45,22 +51,23 @@ contract TimelessNFT is ERC721Enumerable, Ownable {
         string metadataURI;
         uint256 timestamp;
     }
-// addray of those transactions and mints
+
+    // Array of transactions and minted NFTs
     TransactionStruct[] transactions;
     TransactionStruct[] minted;
-//runs once at the starting
+
+    // Runs once at the beginning
     constructor(
         string memory _name,
         string memory _symbol,
-        uint256 _royalityFee,
+        uint256 _royaltyFee,
         address _artist
     ) ERC721(_name, _symbol) {
-        royalityFee = _royalityFee;
+        royaltyFee = _royaltyFee;
         artist = _artist;
     }
 
-
-
+    // Pay to mint an NFT
     function payToMint(
         string memory title,
         string memory description,
@@ -69,16 +76,19 @@ contract TimelessNFT is ERC721Enumerable, Ownable {
     ) external payable {
         require(msg.value >= cost, "Ether too low for minting!");
         require(existingURIs[metadataURI] == 0, "This NFT is already minted!");
-        
-        //amount
-        uint256 royality = (msg.value * royalityFee) / 100;
-        //royalty goes to artist
-        payTo(artist, royality);
-        //minting goes to deployers
-        payTo(owner(), (msg.value - royality));
+
+        // Calculate royalty amount
+        uint256 royalty = (msg.value * royaltyFee) / 100;
+
+        // Pay royalty to the artist
+        payTo(artist, royalty);
+
+        // Pay minting cost to the contract owner
+        payTo(owner(), (msg.value - royalty));
 
         supply++;
-   // we pust this data to minted array 
+
+        // Add the minted NFT to the minted array
         minted.push(
             TransactionStruct(
                 supply,
@@ -90,7 +100,8 @@ contract TimelessNFT is ERC721Enumerable, Ownable {
                 block.timestamp
             )
         );
-//fire the sale event to tell ok nft has been minted
+
+        // Emit the Sale event to notify that an NFT has been minted
         emit Sale(
             supply,
             msg.sender,
@@ -99,22 +110,31 @@ contract TimelessNFT is ERC721Enumerable, Ownable {
             block.timestamp
         );
 
+        // Mint the NFT and assign it to the sender
         _safeMint(msg.sender, supply);
         existingURIs[metadataURI] = 1;
-        //send image to tht guy who paid?????
+
+        // Record the address of the new NFT holder
         holderOf[supply] = msg.sender;
     }
 
+    // Pay to buy an NFT
     function payToBuy(uint256 id) external payable {
         require(msg.value >= minted[id - 1].cost, "Ether too low for purchase!");
         require(msg.sender != minted[id - 1].owner, "Operation Not Allowed!");
 
-        uint256 royality = (msg.value * royalityFee) / 100;
-        payTo(artist, royality);
-        payTo(minted[id - 1].owner, (msg.value - royality));
+        // Calculate royalty amount
+        uint256 royalty = (msg.value * royaltyFee) / 100;
+
+        // Pay royalty to the artist
+        payTo(artist, royalty);
+
+        // Pay the purchase cost to the current NFT owner
+        payTo(minted[id - 1].owner, (msg.value - royalty));
 
         totalTx++;
 
+        // Add the transaction to the transactions array
         transactions.push(
             TransactionStruct(
                 totalTx,
@@ -127,6 +147,7 @@ contract TimelessNFT is ERC721Enumerable, Ownable {
             )
         );
 
+        // Emit the Sale event to notify that an NFT has been purchased
         emit Sale(
             totalTx,
             msg.sender,
@@ -135,9 +156,11 @@ contract TimelessNFT is ERC721Enumerable, Ownable {
             block.timestamp
         );
 
+        // Change the owner of the NFT
         minted[id - 1].owner = msg.sender;
     }
-    // if ur the owner of tht nft u can change the price or like new price
+
+    // Change the price of an NFT
     function changePrice(uint256 id, uint256 newPrice) external returns (bool) {
         require(newPrice > 0 ether, "Ether too low!");
         require(msg.sender == minted[id - 1].owner, "Operation Not Allowed!");
@@ -145,20 +168,24 @@ contract TimelessNFT is ERC721Enumerable, Ownable {
         minted[id - 1].cost = newPrice;
         return true;
     }
-    //paying the money to the address?
+
+    // Pay money to the given address
     function payTo(address to, uint256 amount) internal {
         (bool success, ) = payable(to).call{value: amount}("");
         require(success);
     }
-//shows the list of minted nft fem nft array
+
+    // Get all minted NFTs
     function getAllNFTs() external view returns (TransactionStruct[] memory) {
         return minted;
     }
-//
+
+    // Get information about a specific NFT
     function getNFT(uint256 id) external view returns (TransactionStruct memory) {
         return minted[id - 1];
     }
 
+    // Get all transactions
     function getAllTransactions() external view returns (TransactionStruct[] memory) {
         return transactions;
     }

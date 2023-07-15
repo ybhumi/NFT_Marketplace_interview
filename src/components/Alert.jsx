@@ -14,11 +14,11 @@ const Alert = () => {
     >
       <div
         className="flex flex-col justify-center items-center
-        bg-[#151c25] shadow-xl shadow-[#e32970] rounded-xl
+        bg-[#151c25] shadow-xl shadow-[#7f439d] rounded-xl
         min-w-min py-3 px-10"
       >
         {alert.color == 'red' ? (
-          <FaRegTimesCircle className="text-red-600 text-4xl" />
+          <FaRegTimesCircle className="text-[#ab29e3] text-4xl" />
         ) : (
           <BsCheck2Circle className="text-green-600 text-4xl" />
         )}

@@ -26,7 +26,7 @@ const Hero = () => {
         <div className="flex flex-row mt-5">
           <button
             className="shadow-xl shadow-black text-white
-            bg-[#e32970] hover:bg-[#bd255f]
+            bg-[#ab29e3] hover:bg-[#a125bd]
             rounded-full cursor-pointer p-2"
             onClick={onCreatedNFT}
           >
@@ -52,7 +52,7 @@ const Hero = () => {
 
       <div
         className="shadow-xl shadow-black md:w-2/5 w-full 
-      mt-10 md:mt-0 rounded-md overflow-hidden bg-gray-800"
+      mt-10 md:mt-0 rounded-md overflow-hidden bg-[#322533]"
       >
         <img
           src="https://images.cointelegraph.com/images/1434_aHR0cHM6Ly9zMy5jb2ludGVsZWdyYXBoLmNvbS91cGxvYWRzLzIwMjEtMDYvNGE4NmNmOWQtODM2Mi00YmVhLThiMzctZDEyODAxNjUxZTE1LmpwZWc=.jpg"
@@ -71,7 +71,7 @@ const Hero = () => {
                 ? truncate(connectedAccount, 4, 4, 11)
                 : 'Connect Your Wallet'}
             </p>
-            <small className="text-pink-800 font-bold">@you</small>
+            <small className="text-[#ab29e3] font-bold">@you</small>
           </div>
         </div>
       </div>

@@ -36,7 +36,7 @@ const ShowNFT = () => {
           justify-center bg-black bg-opacity-50 transform
           transition-transform duration-300 ${showModal}`}
     >
-      <div className="bg-[#151c25] shadow-xl shadow-[#e32970] rounded-xl w-11/12 md:w-2/5 h-7/12 p-6">
+      <div className="bg-[#151c25] shadow-xl shadow-[#ab29e3] rounded-xl w-11/12 md:w-2/5 h-7/12 p-6">
         <div className="flex flex-col">
           <div className="flex flex-row justify-between items-center">
             <p className="font-semibold text-gray-400">Buy NFT</p>
@@ -72,7 +72,7 @@ const ShowNFT = () => {
                 />
                 <div className="flex flex-col justify-center items-start">
                   <small className="text-white font-bold">@owner</small>
-                  <small className="text-pink-800 font-semibold">
+                  <small className="text-[#ab29e3]font-semibold">
                     {nft?.owner ? truncate(nft.owner, 4, 4, 11) : '...'}
                   </small>
                 </div>
@@ -88,11 +88,11 @@ const ShowNFT = () => {
             {connectedAccount == nft?.owner ? (
               <button
                 className="flex flex-row justify-center items-center
-                w-full text-[#e32970] text-md border-[#e32970]
+                w-full text-[#ab29e3] text-md border-[#ab29e3]
                 py-2 px-5 rounded-full bg-transparent 
-                drop-shadow-xl border hover:bg-[#bd255f]
+                drop-shadow-xl border hover:bg-[#a125bd]
                 hover:bg-transparent hover:text-white
-                hover:border hover:border-[#bd255f]
+                hover:border hover:border-[#a125bd]
                 focus:outline-none focus:ring mt-5"
                 onClick={onChangePrice}
               >
@@ -101,11 +101,11 @@ const ShowNFT = () => {
             ) : (
               <button
                 className="flex flex-row justify-center items-center
-                w-full text-white text-md bg-[#e32970]
-                hover:bg-[#bd255f] py-2 px-5 rounded-full
+                w-full text-white text-md bg-[#ab29e3]
+                hover:bg-[#ab29e3] py-2 px-5 rounded-full
                 drop-shadow-xl border border-transparent
-                hover:bg-transparent hover:text-[#e32970]
-                hover:border hover:border-[#bd255f]
+                hover:bg-transparent hover:text-[#a125bd]
+                hover:border hover:border-[#a125bd]
                 focus:outline-none focus:ring mt-5"
                 onClick={handleNFTPurchase}
               >

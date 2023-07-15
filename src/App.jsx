@@ -8,7 +8,7 @@ import Header from './components/Header'
 import Hero from './components/Hero'
 import Loading from './components/Loading'
 import ShowNFT from './components/ShowNFT'
-import Transactions from './components/Transactions'
+
 import UpdateNFT from './components/UpdateNFT'
 
 const App = () => {
@@ -24,7 +24,7 @@ const App = () => {
         <Hero />
       </div>
       <Artworks />
-      <Transactions />
+      
       <CreateNFT />
       <ShowNFT />
       <UpdateNFT />
